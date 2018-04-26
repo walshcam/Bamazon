@@ -1,6 +1,9 @@
-create database bamazon;
+-- create database bamazon;
 
 USE bamazon;
+
+DROP TABLE products;
+
 
 CREATE TABLE products (
 -- item_id
@@ -10,12 +13,13 @@ product_name VARCHAR(50) NOT NULL,
 -- department_name
 department_name VARCHAR(50) NOT NULL,
 -- price (cost to customer)
-price INT NOT NULL,
+price DECIMAL(12,2) NOT NULL,
 -- stock_quantity
 stock_quantity INT NOT NULL,
 -- Primary Key
 PRIMARY KEY (item_id)
 );
+
 
 INSERT INTO products (product_name,department_name,price,stock_quantity)
 VALUES ('ACDC Shirt','Clothing',14.99,50);

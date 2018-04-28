@@ -1,7 +1,7 @@
 -- create database bamazon;
 
 USE bamazon;
-
+/*
 DROP TABLE products;
 
 
@@ -50,3 +50,24 @@ VALUES ('Limited Edition Guitar','Music Supplies',3459.95,28);
 
 INSERT INTO products (product_name,department_name,price,stock_quantity)
 VALUES ('Guitar Pick','Music Supplies',0.99,28);
+*/
+/*
+CREATE TABLE departments (
+department_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+department_name VARCHAR(50) NOT NULL,
+over_head_costs INT NOT NULL
+);
+
+INSERT INTO departments (department_name,over_head_costs)
+VALUES ('Clothing',100000);
+
+INSERT INTO departments (department_name,over_head_costs)
+VALUES ('Office Supplies',350000);
+
+INSERT INTO departments (department_name,over_head_costs)
+VALUES ('Music Supplies',500000);
+*/
+/*
+ALTER TABLE products
+ADD total_profit INT;
+*/

@@ -144,7 +144,6 @@ function addInventory() {
 
                 //Find New Quantity
                 let newQuantity = parseInt(chosenItem.stock_quantity) + parseInt(answer.increase);
-                console.log(newQuantity);
 
                 //Increase The Quantity
                 connection.query(
@@ -158,6 +157,7 @@ function addInventory() {
                         }
                     ]
                 )
+                console.log("There are now " + newQuantity + " " + chosenItem.product_name + "s.");
                 managerChoices();
             })
     })        
@@ -193,12 +193,25 @@ function newProduct() {
                     message: "How much does this new product cost? $"
                 },
                 {
-                    name: "stock_quanity",
+                    name: "stock_quantity",
                     type: "input",
                     message: "How many items are there to sell?"
                 }
             ]).then(function(answer){
-                connection.end();
+                connection.query(
+                    "INSERT INTO products SET ?",
+                    {
+                        product_name: answer.product_name,
+                        department_name: answer.department_name,
+                        price: answer.price,
+                        stock_quantity: answer.stock_quantity
+                    },
+                    function(err) {
+                        if (err) throw err;
+                        console.log("A new product has been added!");
+                        managerChoices();
+                    }
+                )
             })
         }    
     )        

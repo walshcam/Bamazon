@@ -65,12 +65,12 @@ INSERT INTO departments (department_name,over_head_costs)
 VALUES ('Office Supplies',350000);
 
 INSERT INTO departments (department_name,over_head_costs)
-VALUES ('Music Supplies',500000);
+VALUES ('Movies',50000);
 */
-
+/*
 ALTER TABLE products
 ADD product_sales INT NOT NULL;
-
+*/
 /*
 ALTER TABLE products
 DROP COLUMN total_profit;

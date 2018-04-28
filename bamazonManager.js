@@ -166,9 +166,9 @@ function addInventory() {
 // Function That Adds New Items To The Inventory
 
 function newProduct() {
-    query = "SELECT products.product_name products.price products.quantity products.department_name departments.department_name";
-    query += " FROM products LEFT JOIN departments"
-    query += " ON products.department_name = departments.department_name"
+    query = "SELECT *";
+    query += " FROM departments";
+    console.log(query);
     connection.query(query, function(err,res) {   
         console.log(res);
         inquirer

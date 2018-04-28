@@ -24,19 +24,33 @@ connection.connect(function(err) {
     if (err) throw err;
     //Run the start function to begin program
     tableDisplay();
-    // start();
+    purchaseChoice();
 });
 
 // Function that asks the user the id of the product they would like to buy and how much
 
-function start() {
-    // inquirer
-    //     .prompt({
-    //         name: "idSelection",
-    //         type: "input",
-    //         mRun2orca
-    
-    //     })
+function purchaseChoice() {
+    inquirer
+        .prompt({
+            name: "idSelection",
+            type: "input",
+            comment: "Which product would you like to buy? (input ID number)",
+            validate: function(value) {
+                if (isNaN(value) === false) {
+                    connection.query(
+                        "SELECT * FROM products", function(err,res) {
+                            if (err) throw err;
+                            let maximumNumber = res.length;
+                            if (value < maximumNumber) {
+                                return true;
+                            }
+                            return false;
+                        }
+                    )
+                }
+                return false;            
+            }
+        })
 }
 
 // Function that Creates Table

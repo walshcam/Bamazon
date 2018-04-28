@@ -1,5 +1,3 @@
-import { connect } from "net";
-
 //Required npm packages
 
 let mysql = require("mysql");
@@ -22,11 +20,11 @@ let connection = mysql.createConnection({
 
 //Connect to the mysql server and sql database
 
-connect.connect(function(err) {
+connection.connect(function(err) {
     if (err) throw err;
     //Run the start function to begin program
     tableDisplay();
-    start();
+    // start();
 });
 
 // Function that asks the user the id of the product they would like to buy and how much
@@ -36,7 +34,8 @@ function start() {
     //     .prompt({
     //         name: "idSelection",
     //         type: "input",
-    //         m
+    //         mRun2orca
+    
     //     })
 }
 
@@ -47,17 +46,20 @@ function tableDisplay() {
         "SELECT * FROM products", function(err,res) {
             if (err) throw err;
             //Use cli-table
+            console.log("We're At The Table Function")
             let table = new Table ({
                 //Create Headers
-                
-            })
-
+                head: ['ID','PRODUCT','DEPARTMENT','PRICE','STOCK'],
+                colWidths: [7, 50, 25, 15, 10]
+            });
+            console.log("We're at the heading " + [res[1].product_name,res[1].department_name]);
+                for (let i = 0; i < res.length; i++) {
+                   table.push([res[i].item_id,res[i].product_name,res[i].department_name,"$ " + res[i].price,res[i].stock_quantity]);
+                }
+            console.log(table.toString());
+            connection.end();
         }
     )
-    
-    let table = new Table ({
-        head:
-    })
 }
 
 // 6. The app should then prompt users with two messages.

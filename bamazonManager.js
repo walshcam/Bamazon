@@ -166,5 +166,43 @@ function addInventory() {
 // Function That Adds New Items To The Inventory
 
 function newProduct() {
-    connection.end();
+    connection.query(
+        "SELECT * FROM products", function(err,res) {   
+        inquirer
+            .prompt([
+                {
+                    name: "product_name",
+                    type: "input",
+                    message: "What item would you like to add?"
+                },
+                {
+                    name: "department_name",
+                    type: "list",
+                    message: "Which department does this belong in?",
+                    choices: function() {
+                        let query = "SELECT department_name FROM products GROUP BY department_name";
+                        connection.query(query,function(err,res) {
+                            let choiceArray = [];
+                            for (var i = 0; i < results.length; i++) {
+                                choiceArray.push(res[i].department_name);
+                            }
+                            return choiceArray; 
+                        })
+                    }
+                },
+                {
+                    name: "price",
+                    type: "input",
+                    message: "How much does this new product cost?"
+                },
+                {
+                    name: "stock_quanity",
+                    type: "input",
+                    message: "How many items are there to sell?"
+                }
+            ]).then(function(answer){
+                connection.end();
+            })
+        }    
+    )        
 }

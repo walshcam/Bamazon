@@ -69,7 +69,7 @@ VALUES ('Music Supplies',500000);
 */
 
 ALTER TABLE products
-ADD product_sales INT;
+ADD product_sales INT NOT NULL;
 
 /*
 ALTER TABLE products

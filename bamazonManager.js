@@ -167,7 +167,7 @@ function addInventory() {
 
 function newProduct() {
     connection.query(
-        "SELECT * FROM products", function(err,res) {   
+        "SELECT department_name FROM products GROUP BY department_name", function(err,res) {   
         inquirer
             .prompt([
                 {
@@ -180,20 +180,17 @@ function newProduct() {
                     type: "list",
                     message: "Which department does this belong in?",
                     choices: function() {
-                        let query = "SELECT department_name FROM products GROUP BY department_name";
-                        connection.query(query,function(err,res) {
                             let choiceArray = [];
-                            for (var i = 0; i < results.length; i++) {
+                            for (var i = 0; i < res.length; i++) {
                                 choiceArray.push(res[i].department_name);
                             }
                             return choiceArray; 
-                        })
                     }
                 },
                 {
                     name: "price",
                     type: "input",
-                    message: "How much does this new product cost?"
+                    message: "How much does this new product cost? $"
                 },
                 {
                     name: "stock_quanity",

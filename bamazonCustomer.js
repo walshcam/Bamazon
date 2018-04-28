@@ -57,6 +57,8 @@ function purchaseChoice() {
             .then(function(answer) {
                 //change quantity amount in server
                 let chosenItem = res[answer.idSelection-1];
+                //find total cost of purchase
+                let totalSales = (parseInt(answer.quantity) * parseInt(chosenItem.price)) + parseInt(chosenItem.product_sales);
                 // console.log(answer.idSelection);
                 // console.log(chosenItem);
                 //Determine if there is enough in stock
@@ -68,7 +70,8 @@ function purchaseChoice() {
                         "UPDATE products SET ? WHERE ?",
                         [
                             {
-                                stock_quantity: quantityLeft
+                                stock_quantity: quantityLeft,
+                                product_sales: totalSales
                             },
                             {
                                 item_id: chosenItem.item_id

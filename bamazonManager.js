@@ -42,7 +42,7 @@ function managerChoices() {
                 ]
             }
         ]).then(function(answer) {
-            console.log(answer.managerChoice);
+            //console.log(answer.managerChoice);
             console.log("\n");
             //switch statement for each response
             switch (answer.managerChoice) {

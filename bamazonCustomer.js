@@ -23,32 +23,27 @@ let connection = mysql.createConnection({
 connection.connect(function(err) {
     if (err) throw err;
     //Run the start function to begin program
-    tableDisplay();
     purchaseChoice();
 });
 
 // Function that asks the user the id of the product they would like to buy and how much
 
 function purchaseChoice() {
+    tableDisplay();
     connection.query("SELECT * FROM products", function(err, res) {
+        let numberOfItems = res.length;
         inquirer
             .prompt([
             {
                 name: "idSelection",
                 type: "input",
-                comment: "Which product would you like to buy? (input ID number)",
+                message: "Which product would you like to buy? (input ID number)",
                 validate: function(value) {
                     if (isNaN(value) === false) {
-                        connection.query(
-                            function(err,res) {
-                                if (err) throw err;
-                                let maximumNumber = res.length;
-                                if (value < maximumNumber) {
-                                    return true;
-                                }
-                                return false;
-                            }
-                        )
+                        if (value <= numberOfItems) {
+                            return true;
+                        }
+                        return false;
                     }
                     return false;            
                 }
@@ -56,23 +51,19 @@ function purchaseChoice() {
             {
                 name: "quantity",
                 type: "input",
-                comment: "How many would you like to buy?",
+                message: "How many would you like to buy?",
             }   
             ])
             .then(function(answer) {
                 //change quantity amount in server
-                let chosenItem;
-                for (var i = 0; i < results.length; i++) {
-                    if (results[i].item_name === answer.choice) {
-                    chosenItem = results[i];
-                    }
-                }
-                
+                let chosenItem = res[answer.idSelection-1];
+                // console.log(answer.idSelection);
+                // console.log(chosenItem);
                 //Determine if there is enough in stock
 
-                if (chosenItem.stock_quantity < parseInt(answer.stock_quantity)) {
+                if (chosenItem.stock_quantity > parseInt(answer.quantity)) {
                     // if there is enough, the database will be updated
-                    let quantityLeft = parseInt(answer.stock_quantity)-chosenItem.stock_quantity;
+                    let quantityLeft = chosenItem.stock_quantity-parseInt(answer.quantity);
                     connection.query(
                         "UPDATE products SET ? WHERE ?",
                         [
@@ -80,12 +71,17 @@ function purchaseChoice() {
                                 stock_quantity: quantityLeft
                             },
                             {
-                                id: chosenItem.item_id
+                                item_id: chosenItem.item_id
                             }
                         ],
                         function (error) {
-                            if (errror) throw error;
-                                console.log("You have successfully purchased " + answer.stock_quantity + chosenItem.product_name);
+                            if (error) throw error;
+                                if (answer.quantity > 1) {
+                                    console.log("You have successfully purchased " + answer.quantity + " " + chosenItem.product_name + "s");
+                                }
+                                else {
+                                    console.log("You have successfully purchased " + answer.quantity + " " + chosenItem.product_name);
+                                }
                                 startOver();
                         }
                     )
@@ -102,7 +98,6 @@ function purchaseChoice() {
 // Function that allows you to exit the program
 
 function startOver() {
-    tableDisplay();
     inquirer
         .prompt({
             name: "continue",
@@ -123,22 +118,20 @@ function startOver() {
 // Function that Creates Table
 
 function tableDisplay() {
+    console.log("\n")
     connection.query(
         "SELECT * FROM products", function(err,res) {
             if (err) throw err;
             //Use cli-table
-            console.log("We're At The Table Function")
             let table = new Table ({
                 //Create Headers
                 head: ['ID','PRODUCT','DEPARTMENT','PRICE','STOCK'],
                 colWidths: [7, 50, 25, 15, 10]
             });
-            console.log("We're at the heading " + [res[1].product_name,res[1].department_name]);
-                for (let i = 0; i < res.length; i++) {
-                   table.push([res[i].item_id,res[i].product_name,res[i].department_name,"$ " + res[i].price,res[i].stock_quantity]);
-                }
+            for (let i = 0; i < res.length; i++) {
+                table.push([res[i].item_id,res[i].product_name,res[i].department_name,"$ " + res[i].price,res[i].stock_quantity]);
+            }
             console.log(table.toString());
-            connection.end();
         }
     )
 }

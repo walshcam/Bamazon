@@ -136,7 +136,6 @@ function tableDisplay() {
     )
 }
 
-// 6. The app should then prompt users with two messages.
-
-//    * The first should ask them the ID of the product they would like to buy.
-//    * The second message should ask how many units of the product they would like to buy.
+module.exports = {
+    tableDisplay: tableDisplay()
+}

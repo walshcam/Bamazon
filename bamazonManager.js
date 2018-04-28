@@ -166,8 +166,11 @@ function addInventory() {
 // Function That Adds New Items To The Inventory
 
 function newProduct() {
-    connection.query(
-        "SELECT department_name FROM products GROUP BY department_name", function(err,res) {   
+    query = "SELECT products.product_name products.price products.quantity products.department_name departments.department_name";
+    query += " FROM products LEFT JOIN departments"
+    query += " ON products.department_name = departments.department_name"
+    connection.query(query, function(err,res) {   
+        console.log(res);
         inquirer
             .prompt([
                 {

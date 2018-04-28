@@ -30,25 +30,92 @@ connection.connect(function(err) {
 // Function that asks the user the id of the product they would like to buy and how much
 
 function purchaseChoice() {
-    inquirer
-        .prompt({
-            name: "idSelection",
-            type: "input",
-            comment: "Which product would you like to buy? (input ID number)",
-            validate: function(value) {
-                if (isNaN(value) === false) {
-                    connection.query(
-                        "SELECT * FROM products", function(err,res) {
-                            if (err) throw err;
-                            let maximumNumber = res.length;
-                            if (value < maximumNumber) {
-                                return true;
+    connection.query("SELECT * FROM products", function(err, res) {
+        inquirer
+            .prompt([
+            {
+                name: "idSelection",
+                type: "input",
+                comment: "Which product would you like to buy? (input ID number)",
+                validate: function(value) {
+                    if (isNaN(value) === false) {
+                        connection.query(
+                            function(err,res) {
+                                if (err) throw err;
+                                let maximumNumber = res.length;
+                                if (value < maximumNumber) {
+                                    return true;
+                                }
+                                return false;
                             }
-                            return false;
+                        )
+                    }
+                    return false;            
+                }
+            },
+            {
+                name: "quantity",
+                type: "input",
+                comment: "How many would you like to buy?",
+            }   
+            ])
+            .then(function(answer) {
+                //change quantity amount in server
+                let chosenItem;
+                for (var i = 0; i < results.length; i++) {
+                    if (results[i].item_name === answer.choice) {
+                    chosenItem = results[i];
+                    }
+                }
+                
+                //Determine if there is enough in stock
+
+                if (chosenItem.stock_quantity < parseInt(answer.stock_quantity)) {
+                    // if there is enough, the database will be updated
+                    let quantityLeft = parseInt(answer.stock_quantity)-chosenItem.stock_quantity;
+                    connection.query(
+                        "UPDATE products SET ? WHERE ?",
+                        [
+                            {
+                                stock_quantity: quantityLeft
+                            },
+                            {
+                                id: chosenItem.item_id
+                            }
+                        ],
+                        function (error) {
+                            if (errror) throw error;
+                                console.log("You have successfully purchased " + answer.stock_quantity + chosenItem.product_name);
+                                startOver();
                         }
                     )
                 }
-                return false;            
+                else {
+                    //Run this if there is not enough in stock
+                    console.log("There was not enough in stock at this time.");
+                    startOver();
+                }
+            })
+    })
+}
+
+// Function that allows you to exit the program
+
+function startOver() {
+    tableDisplay();
+    inquirer
+        .prompt({
+            name: "continue",
+            type: "confirm",
+            message: "Would you like to buy another product?",
+            default: true
+        })
+        .then(function(answer) {
+            if (answer.continue) {
+                purchaseChoice();
+            }
+            else {
+                connection.end();
             }
         })
 }

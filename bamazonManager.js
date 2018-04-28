@@ -1,6 +1,3 @@
-// Import table function
-let tableDisplay = require("./bamazonCustomer.js");
-
 //Required npm packages
 
 let mysql = require("mysql");
@@ -34,20 +31,23 @@ function managerChoices() {
         .prompt ([
             {
                 name: "managerChoice",
-                type: "rawlist",
+                type: "list",
                 message: "What would you like to do?",
                 choices: [
                     "View Products For Sale",
                     "View Low Inventory",
                     "Add To Inventory",
-                    "Add New Product"
+                    "Add New Product",
+                    "Quit"
                 ]
             }
         ]).then(function(answer) {
+            console.log(answer.managerChoice);
+            console.log("\n");
             //switch statement for each response
-            switch (answer) {
+            switch (answer.managerChoice) {
                 case "View Products For Sale":
-                    display();
+                    tableDisplay();
                     break;
                 case "View Low Inventory":
                     lowInventory();
@@ -58,6 +58,9 @@ function managerChoices() {
                 case "Add New Product":
                     newProduct();
                     break;
+                case "Quit":
+                    connection.end();
+                    break;
                 default:
                     console.log("Switch Statment Error at managerChoices()");
                     break;
@@ -65,6 +68,103 @@ function managerChoices() {
         })
 }
 
-function display() {
-    tableDisplay
+// Function that displays the current products
+
+function tableDisplay() {
+    connection.query(
+        "SELECT * FROM products", function(err,res) {
+            if (err) throw err;
+            //Use cli-table
+            let table = new Table ({
+                //Create Headers
+                head: ['ID','PRODUCT','DEPARTMENT','PRICE','STOCK'],
+                colWidths: [7, 50, 25, 15, 10]
+            });
+            for (let i = 0; i < res.length; i++) {
+                table.push([res[i].item_id,res[i].product_name,res[i].department_name,"$ " + res[i].price,res[i].stock_quantity]);
+            }
+            console.log(table.toString() + "\n");
+            managerChoices();
+        }
+    )
+}
+
+// Function That Displays The Low Inventory
+
+function lowInventory() {
+    connection.query(
+        "SELECT * FROM products WHERE stock_quantity < 10", function(err,res) {
+            if (err) throw err;
+            //Use cli-table
+            let table = new Table ({
+                //Create Headers
+                head: ['ID','PRODUCT','DEPARTMENT','PRICE','STOCK'],
+                colWidths: [7, 50, 25, 15, 10]
+            });
+            for (let i = 0; i < res.length; i++) {
+                table.push([res[i].item_id,res[i].product_name,res[i].department_name,"$ " + res[i].price,res[i].stock_quantity]);
+            }
+            console.log(table.toString() + "\n");
+            managerChoices();
+        }
+    )
+}
+
+// Function that Allows You To Add More To The Current Inventory
+
+function addInventory() {
+    connection.query("SELECT * FROM products", function(err,res) {   
+        inquirer
+            .prompt([
+                {
+                name: "managerChoice",
+                type: "list",
+                message: "Which Product Will You Update?",
+                choices: function() {
+                    let choiceArray = [];
+                    for (var i = 0; i < res.length; i++) {
+                        choiceArray.push(res[i].product_name);
+                    }
+                    return choiceArray;
+                }
+                },
+                {
+                    name: "increase",
+                    type: "input",
+                    message: "How much would you like to increase the inventory?"
+                }
+            ]).then(function(answer) {
+                //Get the information about the chosen item
+                let chosenItem;
+                for (let i = 0; i < res.length; i++) {
+                  if (res[i].product_name === answer.managerChoice) {
+                    chosenItem = res[i];
+                  }
+                }
+
+                //Find New Quantity
+                let newQuantity = parseInt(chosenItem.stock_quantity) + parseInt(answer.increase);
+                console.log(newQuantity);
+
+                //Increase The Quantity
+                connection.query(
+                    "UPDATE products SET ? WHERE ?",
+                    [
+                        {
+                            stock_quantity: newQuantity
+                        },
+                        {
+                            item_id: chosenItem.item_id
+                        }
+                    ]
+                )
+                managerChoices();
+            })
+    })        
+}
+
+// Function That Adds New Items To The Inventory
+
+function newProduct() {
+    connection.end();
 }

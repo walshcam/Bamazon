@@ -135,7 +135,3 @@ function tableDisplay() {
         }
     )
 }
-
-module.exports = {
-    tableDisplay: tableDisplay()
-}

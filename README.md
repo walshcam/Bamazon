@@ -44,7 +44,7 @@ The table that contains all information about each product. The customer can pur
 
 The manager can add inventory and insert new items to this table.
 
-![Products Table](./images/productsTable.jpg)
+![Products Table](./images/productsTable.JPG)
 
 ### ***Departments Table***
 
@@ -52,7 +52,7 @@ The supervisor can insert new departments to this table. The supervisor can also
 
 A manager can only add departments listed in this table when adding new products to the products table.
 
-![Departments Table](./images/departmentsTable.jpg)
+![Departments Table](./images/departmentsTable.JPG)
 
 ## TECHNOLOGIES APPLIED
 

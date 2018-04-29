@@ -168,9 +168,9 @@ function addInventory() {
 function newProduct() {
     query = "SELECT *";
     query += " FROM departments";
-    console.log(query);
+    // console.log(query);
     connection.query(query, function(err,res) {   
-        console.log(res);
+        // console.log(res);
         inquirer
             .prompt([
                 {

@@ -69,13 +69,18 @@ function supervisorTable() {
 
     connection.query(query, function(err,res) {
             if (err) throw err;
-            console.log(res);
+            // console.log(res);
             //Use cli-table
             let table = new Table ({
                 //Create Headers
                 head: ['ID','DEPARTMENT','OVERHEAD','SALES','PROFIT / LOSS'],
                 colWidths: [7, 25, 15, 15, 15]
             });
+            for (let i = 0; i < res.length; i++) {
+                if (res[i].department_sales === null) {
+                    res[i].department_sales = 0;
+                } 
+            }
             for (let i = 0; i < res.length; i++) {
                 table.push([res[i].department_id,
                     res[i].department_name,
@@ -93,5 +98,29 @@ function supervisorTable() {
 //Add A New Department
 
 function newDepartment() {
-
+    inquirer.prompt([
+        {
+            name: "newDepartment",
+            type: "input",
+            message: "What is the name of the department you would like to add?",
+        },
+        {
+            name: "overhead",
+            type: "input",
+            message: "How much overhead does this department have?"
+        }
+    ]).then(function(answer) {
+        connection.query(
+            "INSERT INTO departments SET ?",
+            {
+                department_name: answer.newDepartment,
+                over_head_costs: answer.overhead
+            },
+            function(err) {
+                if (err) throw err;
+                console.log("New department has been created!");
+                supervisorChoices();
+            }
+        )
+    })
 }

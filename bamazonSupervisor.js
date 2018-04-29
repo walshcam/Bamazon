@@ -61,11 +61,41 @@ function supervisorChoices() {
 //Supervisor Table
 
 function supervisorTable() {
+    //Department ID and Department Name
+    // query = "SELECT departments.department_id, departments.department_name";
+    // query += " FROM departments";
+    // query += " ORDER BY departments.department_id"
 
+    //Sum of Product Sales
+    // query = "SELECT(";
+    // query += " SELECT department_id, department_name";
+    // query += " FROM departments";
+    // query += ") AS department,("
+    query = "SELECT d.department_id, d.department_name, SUM(p.product_sales) AS department_sales";
+    query += " FROM departments AS d LEFT JOIN products AS p ON p.department_name = d.department_name";
+    query += " GROUP BY d.department_id, d.department_name";
+    // query += " AS product";
+
+    connection.query(query, function(err,res) {
+            if (err) throw err;
+            console.log(res);
+            //Use cli-table
+            // let table = new Table ({
+            //     //Create Headers
+            //     head: ['ID','DEPARTMENT','OVERHEAD','SALES','PROFIT / LOSS'],
+            //     colWidths: [7, 25, 15, 15, 15]
+            // });
+            // for (let i = 0; i < res.length; i++) {
+            //     table.push([res[i].item_id,res[i].product_name,res[i].department_name,"$ " + res[i].price,res[i].stock_quantity]);
+            // }
+            // console.log(table.toString() + "\n");
+            supervisorChoices();
+        }
+    )
 }
 
 //Add A New Department
 
 function newDepartment() {
-    
+
 }

@@ -34,6 +34,26 @@ The supervisor has the option to:
 
  ![bamazonSupervisor GIF](./gifs/bamazonSupervisor.gif)
 
+## MySQL TABLES
+
+There are two tables used in this program (as shown below). The node.js programs above manipulate these tables to create the functionality needed for each application.
+
+### ***Products Table***
+
+The table that contains all information about each product. The customer can purchase items from this list. The purchase reduces inventory and adds the transaction to product_sales (in total dollars)
+
+The manager can add inventory and insert new items to this table.
+
+![Products Table](./images/productsTable.jpg)
+
+### ***Departments Table***
+
+The supervisor can insert new departments to this table. The supervisor can also view the total sales and total profit for each department using this table in conjunction with the products table
+
+A manager can only add departments listed in this table when adding new products to the products table.
+
+![Departments Table](./images/departmentsTable.jpg)
+
 ## TECHNOLOGIES APPLIED
 
 - MySQL database
